@@ -1,0 +1,35 @@
+<mat-card class="container">
+    <form class="form" [formGroup]="dynamicFormGroup" (ngSubmit)="onSubmit()">
+        <ng-container *ngFor="let control of dynamicFormControls">
+            <div class="form-element" *ngIf="['number'].includes(control.type)">
+                <mat-form-field class="full-width" appearance="outline">
+                    <input matInput formControlName="{{ control.name }}" placeholder="{{ control.label }}">
+                </mat-form-field>
+            </div>
+            <div class="form-element"  *ngIf="['select'].includes(control.type)">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>{{ control.label }}</mat-label>
+                    <mat-select formControlName="{{ control.name }}" placeholder="{{ control.label }}">
+                        <mat-option *ngFor="let eachOption of control.options"
+                            [value]="eachOption.value">{{eachOption.label}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="form-element" *ngIf="['date'].includes(control.type)">
+                <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>{{ control.label }}</mat-label>
+                    <input matInput formControlName="{{ control.name }}" [matDatepicker]="picker">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <span *ngIf="
+                    dynamicFormGroup.controls[control.name]?.invalid &&
+                    dynamicFormGroup.controls[control.name]?.touched
+                  ">
+                <mat-error>{{ getErrorMessage(control) }}</mat-error>
+            </span>
+        </ng-container>
+        <button type="submit" class="button"  mat-raised-button color="primary">Submit</button>
+    </form>
+</mat-card>
